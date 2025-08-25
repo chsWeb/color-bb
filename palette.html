@@ -86,7 +86,7 @@
             }
 
             div[title*="500"] .hex::after {
-                content: " (Primary)";
+                content: "(Primary)";
                 color: #888;
             }
 
@@ -108,57 +108,57 @@
         <script>
             // Your colors (flat map)
             const COLORS = {
-                "--gold-25": "#FFFEF5",
-                "--gold-50": "#FFFEEA",
-                "--gold-100": "#FFFCD5",
-                "--gold-200": "#FFF9AC",
-                "--gold-300": "#FEF782",
-                "--gold-400": "#FEF459",
-                "--gold-500": "#FEF12F",
-                "--gold-600": "#FBD626",
-                "--gold-700": "#F8BC1C",
-                "--gold-800": "#F6A113",
-                "--gold-900": "#F38709",
+                "Gold/25": "#FFFEF5",
+                "Gold/50": "#FFFEEA",
+                "Gold/100": "#FFFCD5",
+                "Gold/200": "#FFF9AC",
+                "Gold/300": "#FEF782",
+                "Gold/400": "#FEF459",
+                "Gold/500": "#FEF12F",
+                "Gold/600": "#FBD626",
+                "Gold/700": "#F8BC1C",
+                "Gold/800": "#F6A113",
+                "Gold/900": "#F38709",
 
-                "--blue-dark-25": "#EDEFFC",
-                "--blue-dark-50": "#DADFFC",
-                "--blue-dark-100": "#B6BFF9",
-                "--blue-dark-200": "#6F80F5",
-                "--blue-dark-300": "#374CE9",
-                "--blue-dark-400": "#182CD2",
-                "--blue-dark-500": "#0F2AC8",
-                "--blue-dark-600": "#0D24AD",
-                "--blue-dark-700": "#0B1E91",
-                "--blue-dark-800": "#081775",
-                "--blue-dark-900": "#050F4C",
+                "Blue Dark/25": "#EDEFFC",
+                "Blue Dark/50": "#DADFFC",
+                "Blue Dark/100": "#B6BFF9",
+                "Blue Dark/200": "#6F80F5",
+                "Blue Dark/300": "#374CE9",
+                "Blue Dark/400": "#182CD2",
+                "Blue Dark/500": "#0F2AC8",
+                "Blue Dark/600": "#0D24AD",
+                "Blue Dark/700": "#0B1E91",
+                "Blue Dark/800": "#081775",
+                "Blue Dark/900": "#050F4C",
 
-                "--blue-light-25": "#EEF8FF",
-                "--blue-light-50": "#DCF1FE",
-                "--blue-light-100": "#BAE3FD",
-                "--blue-light-200": "#74C7FB",
-                "--blue-light-300": "#2DA7F6",
-                "--blue-light-400": "#2289E8",
-                "--blue-light-500": "#2195FC",
-                "--blue-light-600": "#1D80D9",
-                "--blue-light-700": "#196BB6",
-                "--blue-light-800": "#145693",
-                "--blue-light-900": "#0D3760",
+                "Blue Light/25": "#EEF8FF",
+                "Blue Light/50": "#DCF1FE",
+                "Blue Light/100": "#BAE3FD",
+                "Blue Light/200": "#74C7FB",
+                "Blue Light/300": "#2DA7F6",
+                "Blue Light/400": "#2289E8",
+                "Blue Light/500": "#2195FC",
+                "Blue Light/600": "#1D80D9",
+                "Blue Light/700": "#196BB6",
+                "Blue Light/800": "#145693",
+                "Blue Light/900": "#0D3760",
 
-                "--green-25": "#F3F9F0",
-                "--green-50": "#E7F3E0",
-                "--green-100": "#CFE6C2",
-                "--green-200": "#9ECA84",
-                "--green-300": "#6EAF46",
-                "--green-400": "#5A9C36",
-                "--green-500": "#59A332",
-                "--green-600": "#4E8E2C",
-                "--green-700": "#437926",
-                "--green-800": "#36611E",
-                "--green-900": "#244213"
+                "Green/25": "#F3F9F0",
+                "Green/50": "#E7F3E0",
+                "Green/100": "#CFE6C2",
+                "Green/200": "#9ECA84",
+                "Green/300": "#6EAF46",
+                "Green/400": "#5A9C36",
+                "Green/500": "#59A332",
+                "Green/600": "#4E8E2C",
+                "Green/700": "#437926",
+                "Green/800": "#36611E",
+                "Green/900": "#244213"
             };
 
             // Group by family before slash, keep desired order
-            const FAMILY_ORDER = ["--gold", "--blue-dark", "--blue-light", "--green"];
+            const FAMILY_ORDER = ["Gold", "Blue Dark", "Blue Light", "Green"];
             const STEP_ORDER = [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
             const groups = {};
