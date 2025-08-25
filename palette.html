@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>The Brand Builders - Color Swatches</title>
+        <style>
+            :root {
+                --bg: #f8fafc;
+                --text: #111827;
+                --muted: #6b7280;
+                --card: #ffffff;
+                --border: #e5e7eb;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 24px;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+                background: var(--bg);
+                color: var(--text);
+            }
+
+            h1 {
+                font-size: 20px;
+                margin: 0 0 8px;
+            }
+
+            p {
+                margin: 0 0 20px;
+                color: var(--muted);
+            }
+
+            section {
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 14px;
+                font-weight: 700;
+                margin: 18px 0 8px;
+                color: var(--muted);
+            }
+
+            .list {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 8px 10px;
+            }
+
+            .row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 4px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .row:last-child {
+                border-bottom: 0;
+            }
+
+            .dot {
+                width: 48px;
+                height: 48px;
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+                border: 1px solid rgba(0, 0, 0, .08);
+                /*box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, .5);*/
+                flex: 0 0 28px;
+            }
+
+            .name {
+                font-weight: 600;
+                min-width: 140px;
+            }
+
+            .hex {
+                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+                color: var(--muted);
+            }
+
+            div[title*="500"] .hex::after {
+                content: " (Primary)";
+                color: #888;
+            }
+
+            /* Make it tidy on narrow screens */
+            @media (max-width: 520px) {
+                .name {
+                    min-width: 120px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>The Brand Builder - Color Swatches</h1>
+        <p>Updated color palette for The Brand Builders website.</p>
+
+        <div id="app"></div>
+
+        <script>
+            // Your colors (flat map)
+            const COLORS = {
+                "Gold/25": "#FFFEF5",
+                "Gold/50": "#FFFEEA",
+                "Gold/100": "#FFFCD5",
+                "Gold/200": "#FFF9AC",
+                "Gold/300": "#FEF782",
+                "Gold/400": "#FEF459",
+                "Gold/500": "#FEF12F",
+                "Gold/600": "#FBD626",
+                "Gold/700": "#F8BC1C",
+                "Gold/800": "#F6A113",
+                "Gold/900": "#F38709",
+
+                "Blue Dark/25": "#EDEFFC",
+                "Blue Dark/50": "#DADFFC",
+                "Blue Dark/100": "#B6BFF9",
+                "Blue Dark/200": "#6F80F5",
+                "Blue Dark/300": "#374CE9",
+                "Blue Dark/400": "#182CD2",
+                "Blue Dark/500": "#0F2AC8",
+                "Blue Dark/600": "#0D24AD",
+                "Blue Dark/700": "#0B1E91",
+                "Blue Dark/800": "#081775",
+                "Blue Dark/900": "#050F4C",
+
+                "Blue Light/25": "#EEF8FF",
+                "Blue Light/50": "#DCF1FE",
+                "Blue Light/100": "#BAE3FD",
+                "Blue Light/200": "#74C7FB",
+                "Blue Light/300": "#2DA7F6",
+                "Blue Light/400": "#2289E8",
+                "Blue Light/500": "#2195FC",
+                "Blue Light/600": "#1D80D9",
+                "Blue Light/700": "#196BB6",
+                "Blue Light/800": "#145693",
+                "Blue Light/900": "#0D3760",
+
+                "Green/25": "#F3F9F0",
+                "Green/50": "#E7F3E0",
+                "Green/100": "#CFE6C2",
+                "Green/200": "#9ECA84",
+                "Green/300": "#6EAF46",
+                "Green/400": "#5A9C36",
+                "Green/500": "#59A332",
+                "Green/600": "#4E8E2C",
+                "Green/700": "#437926",
+                "Green/800": "#36611E",
+                "Green/900": "#244213"
+            };
+
+            // Group by family before slash, keep desired order
+            const FAMILY_ORDER = ["Gold", "Blue Dark", "Blue Light", "Green"];
+            const STEP_ORDER = [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+            const groups = {};
+            Object.entries(COLORS).forEach(([key, hex]) => {
+                const [family, step] = key.split("/");
+                (groups[family] ||= []).push({ name: key, family, step: parseInt(step, 10), hex });
+            });
+
+            const app = document.getElementById("app");
+
+            FAMILY_ORDER.forEach(family => {
+                const items = (groups[family] || []).sort(
+                    (a, b) => STEP_ORDER.indexOf(a.step) - STEP_ORDER.indexOf(b.step)
+                );
+
+                if (items.length === 0) return;
+
+                const section = document.createElement("section");
+                section.innerHTML = `<h2>${family}</h2>`;
+
+                const list = document.createElement("div");
+                list.className = "list";
+
+                items.forEach(({ name, hex }) => {
+                    const row = document.createElement("div");
+                    row.className = "row";
+                    row.title = `${name} · ${hex}`;
+
+                    const dot = document.createElement("div");
+                    dot.className = "dot";
+                    dot.style.background = hex;
+
+                    const nameEl = document.createElement("div");
+                    nameEl.className = "name";
+                    nameEl.textContent = name;
+
+                    const hexEl = document.createElement("div");
+                    hexEl.className = "hex";
+                    hexEl.textContent = hex.toUpperCase();
+
+                    row.appendChild(dot);
+                    row.appendChild(nameEl);
+                    row.appendChild(hexEl);
+                    list.appendChild(row);
+                });
+
+                section.appendChild(list);
+                app.appendChild(section);
+            });
+        </script>
+    </body>
+
+</html>
