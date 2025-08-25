@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Brand Palette – WCAG & APCA · Black/White Text · Light/Dark UI</title>
+        <title>Brand Palette – Contrast Tool</title>
         <style>
             :root {
                 --bg: #f9fafb;
@@ -19,16 +19,22 @@
                 --chip-text: #6B7280;
                 --btn-bg: #111827;
                 --btn-fg: #ffffff;
+
+                --badge-aaa-bg: #DCFCE7;
+                --badge-aaa-fg: #065F46;
+                --badge-aa-bg: #FEF3C7;
+                --badge-aa-fg: #92400E;
+                --badge-aal-bg: #DBEAFE;
+                --badge-aal-fg: #1E3A8A;
+                --badge-fail-bg: #FEE2E2;
+                --badge-fail-fg: #991B1B;
             }
 
-            /* Dark theme variables */
             html[data-theme="dark"] {
                 --bg: #0b1220;
-                /* deep slate/navy */
                 --text: #e5e7eb;
                 --muted: #9CA3AF;
                 --card: #0f172a;
-                /* slate-900-ish */
                 --border: #1f2937;
                 --shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
                 --chip-bg: #0f172a;
@@ -100,6 +106,79 @@
                 cursor: pointer;
             }
 
+            /* Legend / Key */
+            .legend {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                box-shadow: var(--shadow);
+                padding: 14px 16px;
+                margin-bottom: 20px;
+            }
+
+            .legend summary {
+                cursor: pointer;
+                list-style: none;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .legend summary::marker {
+                display: none;
+            }
+
+            .legend .meta {
+                color: var(--muted);
+                font-size: 13px;
+            }
+
+            .legend .row {
+                display: grid;
+                grid-template-columns: 160px 1fr;
+                gap: 8px;
+                align-items: center;
+                margin: 10px 0;
+            }
+
+            .legend .badge {
+                padding: 2px 8px;
+                border-radius: 999px;
+                font-weight: 700;
+                display: inline-block;
+            }
+
+            .legend .aaa {
+                background: var(--badge-aaa-bg);
+                color: var(--badge-aaa-fg);
+            }
+
+            .legend .aa {
+                background: var(--badge-aa-bg);
+                color: var(--badge-aa-fg);
+            }
+
+            .legend .aal {
+                background: var(--badge-aal-bg);
+                color: var(--badge-aal-fg);
+            }
+
+            .legend .fail {
+                background: var(--badge-fail-bg);
+                color: var(--badge-fail-fg);
+            }
+
+            .legend code {
+                background: transparent;
+                color: var(--muted);
+            }
+
+            .legend a {
+                color: inherit;
+                text-underline-offset: 2px;
+            }
+
             .section {
                 margin-top: 24px;
             }
@@ -133,14 +212,11 @@
 
             .card.main {
                 width: 200px;
-                /*border-color: #c7d2fe;*/
+                border-color: #c7d2fe;
             }
-
-            /* highlight the 500 swatch */
 
             .swatch {
                 height: 64px;
-                /* requested change */
                 padding: 8px 12px;
                 display: flex;
                 align-items: center;
@@ -171,31 +247,25 @@
                 color: var(--muted);
             }
 
-            /* Badge color states (based on rating label) */
             .AAA .badge {
-                background: #DCFCE7;
-                color: #065F46;
+                background: var(--badge-aaa-bg);
+                color: var(--badge-aaa-fg);
             }
 
-            /* green */
             .AA .badge {
-                background: #FEF3C7;
-                color: #92400E;
+                background: var(--badge-aa-bg);
+                color: var(--badge-aa-fg);
             }
 
-            /* amber */
             .AAL .badge {
-                background: #DBEAFE;
-                color: #1E3A8A;
+                background: var(--badge-aal-bg);
+                color: var(--badge-aal-fg);
             }
 
-            /* blue (AA Large) */
             .FAIL .badge {
-                background: #FEE2E2;
-                color: #991B1B;
+                background: var(--badge-fail-bg);
+                color: var(--badge-fail-fg);
             }
-
-            /* red */
         </style>
     </head>
 
@@ -203,244 +273,146 @@
         <header>
             <h1>Brand Palette</h1>
             <p class="hint">
-                Toggle between <strong>WCAG contrast ratio</strong> and <strong>APCA Lc</strong>, preview with
-                <strong>#000</strong> or <strong>#FFF</strong> text, and switch the UI to
-                <strong>Light</strong>/<strong>Dark</strong>.
-                (Contrast uses the swatch color vs selected text color; the page theme is just for preview context.)
+                Toggles: <strong>WCAG↔APCA</strong>, <strong>#000↔#FFF text</strong>, <strong>Light↔Dark UI</strong>,
+                and show/hide <strong>contrast ratings</strong>.
             </p>
             <div class="controls">
-                <div class="chip">
-                    <span class="label">Metric:</span>
-                    <button id="modeBtn" type="button">WCAG</button>
-                </div>
-                <div class="chip">
-                    <span class="label">Text:</span>
-                    <button id="textBtn" type="button">#000</button>
-                </div>
-                <div class="chip">
-                    <span class="label">Theme:</span>
-                    <button id="themeBtn" type="button">Light</button>
-                </div>
+                <div class="chip"><span class="label">Metric:</span><button id="modeBtn">WCAG</button></div>
+                <div class="chip"><span class="label">Text:</span><button id="textBtn">#000</button></div>
+                <div class="chip"><span class="label">Theme:</span><button id="themeBtn">Light</button></div>
+                <div class="chip"><span class="label">Contrast:</span><button id="contrastBtn">On</button></div>
             </div>
         </header>
+
+        <details class="legend" open>
+            <summary>Contrast Key <span class="meta">(what the badges mean)</span></summary>
+            <div class="row">
+                <div><span class="badge aaa">AAA</span></div>
+                <div>
+                    <strong>WCAG:</strong> ratio ≥ <code>7.0</code> — Good for body text.<br />
+                    <strong>APCA:</strong> Lc ≥ <code>90</code> — Good for small body text.
+                    (<a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-enhanced.html" target="_blank">WCAG
+                        1.4.6</a>,
+                    <a href="https://www.myndex.com/APCA/" target="_blank">APCA explainer</a>)
+                </div>
+            </div>
+            <div class="row">
+                <div><span class="badge aa">AA</span></div>
+                <div>
+                    <strong>WCAG:</strong> ratio ≥ <code>4.5</code> — Body text passes.<br />
+                    <strong>APCA:</strong> Lc ≥ <code>75</code> — Good for ~24px or bold.
+                    (<a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html" target="_blank">WCAG
+                        1.4.3</a>)
+                </div>
+            </div>
+            <div class="row">
+                <div><span class="badge aal">AA Large</span></div>
+                <div>
+                    <strong>WCAG:</strong> ratio ≥ <code>3.0</code> — Large text only.<br />
+                    Large = ≥24px normal OR ≥18.66px bold.<br />
+                    <strong>APCA:</strong> Lc ≥ <code>60</code> — Large/bold text OK.
+                </div>
+            </div>
+            <div class="row">
+                <div><span class="badge fail">Fail</span></div>
+                <div>
+                    Below thresholds — change tone, text color, or size.
+                </div>
+            </div>
+        </details>
 
         <div id="app"></div>
 
         <script>
-            // ---------- Color math ----------
-            const srgbToLin = c => {
-                const cs = c / 255;
-                return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4);
-            };
-            const luminance = hex => {
-                const m = hex.replace('#', '');
-                const r = parseInt(m.slice(0, 2), 16), g = parseInt(m.slice(2, 4), 16), b = parseInt(m.slice(4, 6), 16);
-                const R = srgbToLin(r), G = srgbToLin(g), B = srgbToLin(b);
-                return 0.2126 * R + 0.7152 * G + 0.0722 * B;
-            };
-
-            // ---------- WCAG contrast (ratio) ----------
-            function contrastRatio(bgHex, textHex) {
-                const Lbg = luminance(bgHex);
-                const Ltx = luminance(textHex);
-                const L1 = Math.max(Lbg, Ltx);
-                const L2 = Math.min(Lbg, Ltx);
-                return (L1 + 0.05) / (L2 + 0.05);
-            }
-            const ratingWCAG = ratio => {
-                if (ratio >= 7) return 'AAA';
-                if (ratio >= 4.5) return 'AA';
-                if (ratio >= 3) return 'AAL'; // AA Large only
-                return 'FAIL';
-            };
-
-            // ---------- APCA (approx Lc) ----------
-            // Approximation of APCA/SAPC (v0.98g-style). For compliance, verify with the official tool.
-            function apcaLc(bgHex, textHex) {
-                let Ybg = luminance(bgHex);
-                let Ytx = luminance(textHex);
-
-                // clamps
-                const blkThrs = 0.022, blkClmp = 1.414;
-                if (Ybg < blkThrs) Ybg += Math.pow(blkThrs - Ybg, blkClmp);
-                if (Ytx < blkThrs) Ytx += Math.pow(blkThrs - Ytx, blkClmp);
-
-                // polarity: "normal" if text darker than bg (dark text on light bg)
-                const normalPolarity = Ybg > Ytx;
-
-                // constants
-                const normBG = 0.56, normTXT = 0.57, revBG = 0.65, revTXT = 0.62;
-                const scale = 1.14, loClip = 0.1;
-
-                let SAPC;
-                if (normalPolarity) {
-                    SAPC = (Math.pow(Ybg, normBG) - Math.pow(Ytx, normTXT)) * scale;
-                } else {
-                    SAPC = (Math.pow(Ybg, revBG) - Math.pow(Ytx, revTXT)) * scale;
-                }
-                let Lc = SAPC * 100;
-                if (Math.abs(Lc) < loClip) Lc = 0;
-                return Math.abs(Lc);
-            }
-
-            // Heuristic badges for APCA (design guidance)
-            const ratingAPCA = lc => {
-                if (lc >= 90) return 'AAA'; // body text
-                if (lc >= 75) return 'AA';  // ~24px or bold
-                if (lc >= 60) return 'AAL'; // large text only
-                return 'FAIL';
-            };
-
+            // ---- color math
+            const srgbToLin = c => { const cs = c / 255; return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4) };
+            const luminance = hex => { const m = hex.replace('#', ''); const r = parseInt(m.slice(0, 2), 16), g = parseInt(m.slice(2, 4), 16), b = parseInt(m.slice(4, 6), 16); const R = srgbToLin(r), G = srgbToLin(g), B = srgbToLin(b); return 0.2126 * R + 0.7152 * G + 0.0722 * B };
+            function contrastRatio(bgHex, textHex) { const Lbg = luminance(bgHex), Ltx = luminance(textHex); const L1 = Math.max(Lbg, Ltx), L2 = Math.min(Lbg, Ltx); return (L1 + 0.05) / (L2 + 0.05) }
+            const ratingWCAG = r => r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AAL' : 'FAIL';
+            function apcaLc(bgHex, textHex) { let Ybg = luminance(bgHex), Ytx = luminance(textHex); const blkThrs = 0.022, blkClmp = 1.414; if (Ybg < blkThrs) Ybg += Math.pow(blkThrs - Ybg, blkClmp); if (Ytx < blkThrs) Ytx += Math.pow(blkThrs - Ytx, blkClmp); const normal = Ybg > Ytx; const normBG = 0.56, normTXT = 0.57, revBG = 0.65, revTXT = 0.62; const scale = 1.14, loClip = 0.1; let SAPC; if (normal) { SAPC = (Math.pow(Ybg, normBG) - Math.pow(Ytx, normTXT)) * scale } else { SAPC = (Math.pow(Ybg, revBG) - Math.pow(Ytx, revTXT)) * scale } let Lc = SAPC * 100; if (Math.abs(Lc) < loClip) Lc = 0; return Math.abs(Lc) }
+            const ratingAPCA = lc => lc >= 90 ? 'AAA' : lc >= 75 ? 'AA' : lc >= 60 ? 'AAL' : 'FAIL';
             const fmtWCAG = r => (Math.round(r * 100) / 100).toFixed(2);
             const fmtAPCA = lc => Math.round(lc).toString();
 
-            // ---------- Palettes ----------
+            // ---- palettes
             const palettes = [
                 {
-                    name: 'Gold (Amber)',
-                    note: 'Combined yellow + orange ramp.',
-                    tokenPrefix: '--gold',
-                    colors: [
-                        { step: 25, hex: '#FFFEF5' },
-                        { step: 50, hex: '#FFFEEA' },
-                        { step: 100, hex: '#FFFCD5' },
-                        { step: 200, hex: '#FFF9AC' },
-                        { step: 300, hex: '#FEF782' },
-                        { step: 400, hex: '#FEF459' },
-                        { step: 500, hex: '#FEF12F' },
-                        { step: 600, hex: '#FBD626' },
-                        { step: 700, hex: '#F8BC1C' },
-                        { step: 800, hex: '#F6A113' },
-                        { step: 900, hex: '#F38709' }
-                    ]
+                    name: 'Gold (Amber)', tokenPrefix: '--gold', colors: [
+                        { step: 25, hex: '#FFFEF5' }, { step: 50, hex: '#FFFEEA' }, { step: 100, hex: '#FFFCD5' },
+                        { step: 200, hex: '#FFF9AC' }, { step: 300, hex: '#FEF782' }, { step: 400, hex: '#FEF459' },
+                        { step: 500, hex: '#FEF12F' }, { step: 600, hex: '#FBD626' }, { step: 700, hex: '#F8BC1C' },
+                        { step: 800, hex: '#F6A113' }, { step: 900, hex: '#F38709' }]
                 },
                 {
-                    name: 'Blue Dark',
-                    note: '',
-                    tokenPrefix: '--bluedark',
-                    colors: [
-                        { step: 25, hex: '#EDEFFC' },
-                        { step: 50, hex: '#DADFFC' },
-                        { step: 100, hex: '#B6BFF9' },
-                        { step: 200, hex: '#6F80F5' },
-                        { step: 300, hex: '#374CE9' },
-                        { step: 400, hex: '#182CD2' },
-                        { step: 500, hex: '#0F2AC8' },
-                        { step: 600, hex: '#0D24AD' },
-                        { step: 700, hex: '#0B1E91' },
-                        { step: 800, hex: '#081775' },
-                        { step: 900, hex: '#050F4C' }
-                    ]
+                    name: 'Blue Dark', tokenPrefix: '--bluedark', colors: [
+                        { step: 25, hex: '#EDEFFC' }, { step: 50, hex: '#DADFFC' }, { step: 100, hex: '#B6BFF9' },
+                        { step: 200, hex: '#6F80F5' }, { step: 300, hex: '#374CE9' }, { step: 400, hex: '#182CD2' },
+                        { step: 500, hex: '#0F2AC8' }, { step: 600, hex: '#0D24AD' }, { step: 700, hex: '#0B1E91' },
+                        { step: 800, hex: '#081775' }, { step: 900, hex: '#050F4C' }]
                 },
                 {
-                    name: 'Blue Light',
-                    note: '',
-                    tokenPrefix: '--bluelight',
-                    colors: [
-                        { step: 25, hex: '#EEF8FF' },
-                        { step: 50, hex: '#DCF1FE' },
-                        { step: 100, hex: '#BAE3FD' },
-                        { step: 200, hex: '#74C7FB' },
-                        { step: 300, hex: '#2DA7F6' },
-                        { step: 400, hex: '#2289E8' },
-                        { step: 500, hex: '#2195FC' },
-                        { step: 600, hex: '#1D80D9' },
-                        { step: 700, hex: '#196BB6' },
-                        { step: 800, hex: '#145693' },
-                        { step: 900, hex: '#0D3760' }
-                    ]
+                    name: 'Blue Light', tokenPrefix: '--bluelight', colors: [
+                        { step: 25, hex: '#EEF8FF' }, { step: 50, hex: '#DCF1FE' }, { step: 100, hex: '#BAE3FD' },
+                        { step: 200, hex: '#74C7FB' }, { step: 300, hex: '#2DA7F6' }, { step: 400, hex: '#2289E8' },
+                        { step: 500, hex: '#2195FC' }, { step: 600, hex: '#1D80D9' }, { step: 700, hex: '#196BB6' },
+                        { step: 800, hex: '#145693' }, { step: 900, hex: '#0D3760' }]
                 },
                 {
-                    name: 'Green',
-                    note: '',
-                    tokenPrefix: '--green',
-                    colors: [
-                        { step: 25, hex: '#F3F9F0' },
-                        { step: 50, hex: '#E7F3E0' },
-                        { step: 100, hex: '#CFE6C2' },
-                        { step: 200, hex: '#9ECA84' },
-                        { step: 300, hex: '#6EAF46' },
-                        { step: 400, hex: '#5A9C36' },
-                        { step: 500, hex: '#59A332' },
-                        { step: 600, hex: '#4E8E2C' },
-                        { step: 700, hex: '#437926' },
-                        { step: 800, hex: '#36611E' },
-                        { step: 900, hex: '#244213' }
-                    ]
-                }
-            ];
+                    name: 'Green', tokenPrefix: '--green', colors: [
+                        { step: 25, hex: '#F3F9F0' }, { step: 50, hex: '#E7F3E0' }, { step: 100, hex: '#CFE6C2' },
+                        { step: 200, hex: '#9ECA84' }, { step: 300, hex: '#6EAF46' }, { step: 400, hex: '#5A9C36' },
+                        { step: 500, hex: '#59A332' }, { step: 600, hex: '#4E8E2C' }, { step: 700, hex: '#437926' },
+                        { step: 800, hex: '#36611E' }, { step: 900, hex: '#244213' }]
+                }];
 
-            // ---------- Render ----------
+            // ---- state
+            let mode = 'WCAG', textHex = '#000000', showContrast = true;
             const app = document.getElementById('app');
             const modeBtn = document.getElementById('modeBtn');
             const textBtn = document.getElementById('textBtn');
             const themeBtn = document.getElementById('themeBtn');
-
-            let mode = 'WCAG';          // or 'APCA'
-            let textHex = '#000000';    // or '#FFFFFF'
+            const contrastBtn = document.getElementById('contrastBtn');
 
             function badgeFor(bgHex, textHex) {
-                if (mode === 'WCAG') {
-                    const r = contrastRatio(bgHex, textHex);
-                    return { label: ratingWCAG(r), text: ` ${fmtWCAG(r)}` };
-                } else {
-                    const lc = apcaLc(bgHex, textHex);
-                    return { label: ratingAPCA(lc), text: ` Lc ${fmtAPCA(lc)}` };
-                }
+                if (!showContrast) return null;
+                if (mode === 'WCAG') { const r = contrastRatio(bgHex, textHex); return { label: ratingWCAG(r), text: ` ${fmtWCAG(r)}` } }
+                else { const lc = apcaLc(bgHex, textHex); return { label: ratingAPCA(lc), text: ` Lc ${fmtAPCA(lc)}` } }
             }
 
             function render() {
                 app.innerHTML = '';
-                palettes.forEach(({ name, note, tokenPrefix, colors }) => {
+                palettes.forEach(({ name, tokenPrefix, colors }) => {
                     const section = document.createElement('section');
                     section.className = 'section';
-                    section.innerHTML = `
-          <h2>${name}</h2>
-          <p>${note} Showing ${mode === 'WCAG' ? 'WCAG contrast ratio' : 'APCA Lc'} vs <code>${textHex.toUpperCase()}</code>.</p>
-          <div class="palette"></div>
-        `;
+                    section.innerHTML = `<h2>${name}</h2><p>${showContrast ? `${mode} vs <code>${textHex.toUpperCase()}</code>` : 'Contrast hidden'}</p><div class="palette"></div>`;
                     const row = section.querySelector('.palette');
-
                     colors.forEach(({ step, hex }) => {
                         const badge = badgeFor(hex, textHex);
                         const card = document.createElement('div');
-                        card.className = `card ${badge.label} ${step === 500 ? 'main' : ''}`;
+                        card.className = `card ${badge ? badge.label : ''} ${step === 500 ? 'main' : ''}`;
                         card.innerHTML = `
             <div class="swatch" style="background:${hex}; color:${textHex}">
-              <span class="badge">${badge.label}${badge.text}</span>
+              ${badge ? `<span class="badge">${badge.label}${badge.text}</span>` : ''}
             </div>
             <div class="info">
               <div class="token">${tokenPrefix}-${step}</div>
               <div class="hex">${hex}</div>
-            </div>
-          `;
+            </div>`;
                         row.appendChild(card);
                     });
-
                     app.appendChild(section);
                 });
-
-                // Update control button labels
                 modeBtn.textContent = mode;
                 textBtn.textContent = textHex === '#000000' ? '#000' : '#FFF';
                 const theme = document.documentElement.getAttribute('data-theme');
                 themeBtn.textContent = theme === 'dark' ? 'Dark' : 'Light';
+                contrastBtn.textContent = showContrast ? 'On' : 'Off';
             }
 
-            modeBtn.addEventListener('click', () => {
-                mode = (mode === 'WCAG') ? 'APCA' : 'WCAG';
-                render();
-            });
-            textBtn.addEventListener('click', () => {
-                textHex = (textHex === '#000000') ? '#FFFFFF' : '#000000';
-                render();
-            });
-            themeBtn.addEventListener('click', () => {
-                const cur = document.documentElement.getAttribute('data-theme') || 'light';
-                const next = cur === 'light' ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', next);
-                render();
-            });
+            modeBtn.onclick = () => { mode = mode === 'WCAG' ? 'APCA' : 'WCAG'; render() };
+            textBtn.onclick = () => { textHex = textHex === '#000000' ? '#FFFFFF' : '#000000'; render() };
+            themeBtn.onclick = () => { const cur = document.documentElement.getAttribute('data-theme') || 'light'; const next = cur === 'light' ? 'dark' : 'light'; document.documentElement.setAttribute('data-theme', next); render() };
+            contrastBtn.onclick = () => { showContrast = !showContrast; render() };
 
             render();
         </script>
